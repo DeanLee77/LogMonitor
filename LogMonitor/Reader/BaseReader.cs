@@ -1,24 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LogMonitor.Watcher
+namespace LogMonitor.Reader
 {
-    public abstract class BaseWatcher
+    public abstract class BaseReader
     {
         private Thread _thread;
         private AutoResetEvent _autoResetEvent;
-        protected StringBuilder _sb;
-        protected const string _consolidatedLogFilePath = @"C:\Windows\Temp\consolidated log\consolidatedLog.log";
-        protected BaseWatcher()
+
+        public BaseReader()
         {
             _thread = new Thread(new ThreadStart(this.RunThread));
             _autoResetEvent = new AutoResetEvent(false);
-            _sb = new StringBuilder();
-
         }
 
+        
         public abstract void RunThread();
 
         public void Start() => this._thread.Start();
@@ -28,12 +28,13 @@ namespace LogMonitor.Watcher
         public void Wait() => this._autoResetEvent.WaitOne();
         public void Finish()
         {
-            if(IsAlive)
+            if (IsAlive)
             {
                 SetSignal();
                 Join();
             }
-           
+
         }
+
     }
 }

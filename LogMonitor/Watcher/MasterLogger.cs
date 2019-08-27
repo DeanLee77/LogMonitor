@@ -2,23 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace LogMonitor.Watcher
 {
-    internal class MasterLogger
+    public class MasterLogger
     {
-        internal string Time;
-        internal string Location;
-        internal string Level;
-        internal string Output;
+        public string Time;
+        public string Location;
+        public string Level;
+        public string Output;
 
         public MasterLogger(string time, string location, string level, string output)
         {
-            Time = time;
-            Location = location;
-            Level = level;
-            Output = output;
+            Time = time.Trim();
+            Location = location.Trim();
+            Level = Regex.Replace(level.Trim(), @"[\[\]]", "");
+            Output = output.Trim();
         }
 
 
