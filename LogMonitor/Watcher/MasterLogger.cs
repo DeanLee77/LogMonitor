@@ -18,7 +18,7 @@ namespace LogMonitor.Watcher
         {
             Time = time.Trim();
             Location = location.Trim();
-            Level = Regex.Replace(level.Trim(), @"[\[\]]", "");
+            Level = level != null? Regex.Replace(level.Trim(), @"[\[\]]", ""): "";
             Output = output.Trim();
         }
 

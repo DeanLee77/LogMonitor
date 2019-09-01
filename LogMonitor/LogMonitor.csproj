@@ -55,6 +55,7 @@
     <Compile Include="Reader\FileReader.cs" />
     <Compile Include="Reader\BaseReader.cs" />
     <Compile Include="Watcher\BaseWatcher.cs" />
+    <Compile Include="Watcher\DatabaseWatcher.cs" />
     <Compile Include="Watcher\MasterLogger.cs" />
     <Compile Include="Watcher\Watcher.cs" />
     <Compile Include="Watching.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Watcher\FileWatcher.cs" />
     <Compile Include="WatchingObject\BaseWatchingObject.cs" />
+    <Compile Include="WatchingObject\WatchingDatabaseObject.cs" />
     <Compile Include="WatchingObject\WatchingFileObject.cs" />
   </ItemGroup>
   <ItemGroup>

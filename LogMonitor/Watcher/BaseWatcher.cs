@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlClient;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ namespace LogMonitor.Watcher
 {
     public abstract class BaseWatcher
     {
-        private Thread _thread;
+        protected Thread _thread;
         private AutoResetEvent _autoResetEvent;
         protected StringBuilder _sb;
         protected const string _consolidatedLogFilePath = @"C:\Windows\Temp\consolidated log\consolidatedLog.log";
@@ -26,7 +27,7 @@ namespace LogMonitor.Watcher
         public bool IsAlive => this._thread.IsAlive;
         public void SetSignal() => this._autoResetEvent.Set();
         public void Wait() => this._autoResetEvent.WaitOne();
-        public void Finish()
+        public virtual void Finish()
         {
             if(IsAlive)
             {

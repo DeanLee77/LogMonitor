@@ -22,7 +22,6 @@ namespace LogMonitor.Watcher
         private long _newFileSize;
         private string _jsonString;
         private string _configFilePath = @"C:\Windows\Temp\config\watcher.config";
-        private string _fileToWrite = @"C:\Windows\Temp\consolidated log\consolidatedLog.txt";
 
         public FileWatcher(string filePath, string filter, string fileName, long fileSize)
             :base()
@@ -154,13 +153,14 @@ namespace LogMonitor.Watcher
             Object locker = new Object();
             lock(locker)
             {
-                using (StreamWriter sw = File.AppendText(_fileToWrite))
+                using (StreamWriter sw = File.AppendText(_consolidatedLogFilePath))
                 {
                     sw.Write(jsonResult);
                     sw.Write("\n");
                     sw.Flush();
                     sw.Close();
-                }               
+                    Console.WriteLine("Finished having read changes in file system and written it onto a consolidated log file");
+                }
             }
         }
       

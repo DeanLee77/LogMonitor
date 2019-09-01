@@ -34,11 +34,16 @@ namespace LogMonitor.Watcher
                         WatchingFileObject watchingFileObject = (WatchingFileObject)watchingObject;
                         string path = watchingFileObject.GetPath();
                         string fileName = watchingFileObject.GetFileName();
+                        string fileType = watchingFileObject.GetFileType();
  
-                        FileWatcher fileWatcher = new FileWatcher(path, "*." + watchingFileObject.GetFileType(), fileName, new FileInfo(path+"\\"+fileName).Length);
+                        FileWatcher fileWatcher = new FileWatcher(path, "*." + fileType, fileName, new FileInfo(path+"\\"+fileName).Length);
                         _threadList.Add(fileWatcher);
                         break;
-
+                    case "database":
+                        WatchingDatabaseObject watchingDataObject = (WatchingDatabaseObject)watchingObject;
+                        DatabaseWatcher dataWatcher = new DatabaseWatcher(watchingDataObject.GetDataSource(), watchingDataObject.GetDatabaseName(), watchingDataObject.GetUserId());
+                        _threadList.Add(dataWatcher);
+                        break;
                 }
             }
 
@@ -69,6 +74,11 @@ namespace LogMonitor.Watcher
                 {
                     WatchingFileObject watchingFileObject = new WatchingFileObject(watchType, watcher.Attributes["fileType"].Value, watcher.Attributes["name"].Value, watcher.Attributes["path"].Value);
                     _watchingList.Add(watchingFileObject);
+                }
+                else if(watchType.Equals("database"))
+                {
+                    WatchingDatabaseObject watchingDatabaseObject = new WatchingDatabaseObject(watchType, watcher.Attributes["dataSource"].Value, watcher.Attributes["databaseName"].Value, watcher.Attributes["userId"].Value);
+                    _watchingList.Add(watchingDatabaseObject);
                 }
             }
 
