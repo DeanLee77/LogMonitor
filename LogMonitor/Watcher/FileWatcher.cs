@@ -1,5 +1,4 @@
-﻿using LogMonitor.Reader;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -66,7 +65,7 @@ namespace LogMonitor.Watcher
             }
         }
 
-        public void ReadFile()
+        private void ReadFile()
         {
             using (FileStream fs = new FileStream(_fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
@@ -110,7 +109,7 @@ namespace LogMonitor.Watcher
             return _fileName;
         }
        
-        public void WriteOnFile()
+        private void WriteOnFile()
         {
             string[] filePathArray = _filePath.Split('\\');
             string fileKind = filePathArray[filePathArray.Length - 1];

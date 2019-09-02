@@ -55,7 +55,6 @@
   <ItemGroup>
     <Compile Include="DatabaseWatcherTest.cs" />
     <Compile Include="FileWatcherTest.cs" />
-    <Compile Include="WatcherTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

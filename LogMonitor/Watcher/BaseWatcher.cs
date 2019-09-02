@@ -12,7 +12,8 @@ namespace LogMonitor.Watcher
         private AutoResetEvent _autoResetEvent;
         protected StringBuilder _sb;
         protected const string _consolidatedLogFilePath = @"C:\Windows\Temp\consolidated log\consolidatedLog.log";
-        protected BaseWatcher()
+
+        public BaseWatcher()
         {
             _thread = new Thread(new ThreadStart(this.RunThread));
             _autoResetEvent = new AutoResetEvent(false);
