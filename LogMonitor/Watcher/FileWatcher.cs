@@ -68,6 +68,7 @@ namespace LogMonitor.Watcher
             else if(_fullPath.Equals(_configFilePath))
             {
                 OnConfigFileUpdated(e);
+                _fileSize = _newFileSize;
             }
         }
         private void ReadFile()
@@ -150,8 +151,12 @@ namespace LogMonitor.Watcher
             string[] stringArray;
             string jsonResult ="";
             MasterLogger m_logger;
+
+            //may need to create enum for this fileKind and add a functionality to each enum type by using extension method
+            // then it will be easier for maintance
             switch (fileKind)
             {
+                case "TestLog":
                 case "logs":
                     //reading log file : comma separated and format is timestamp, number, info, description
                     //JSON format needs to be Time, Location, Level, Output
@@ -199,11 +204,11 @@ namespace LogMonitor.Watcher
         {
             //when this method is being reached ReadFile() is alrady been called so that '_jsonString' has already an approprivate value
 
-            if (_jsonString.Trim().Length != 0) // this variable: this logic need due to the reason specified in 'https://devblogs.microsoft.com/oldnewthing/?p=1053'
+            if (_jsonString.Trim().Length != 0 && _fileSize != _newFileSize) // this variable: this logic need due to the reason specified in 'https://devblogs.microsoft.com/oldnewthing/?p=1053'
             {
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.LoadXml(_jsonString);
-                ConfigFileUpdated?.Invoke(xmlDoc, e);
+                ConfigFileUpdated?.Invoke(xmlDoc.GetElementsByTagName("watcher").Item(0), e);
             }           
         }
 
