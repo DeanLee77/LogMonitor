@@ -52,12 +52,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Reader\FileReader.cs" />
-    <Compile Include="Reader\BaseReader.cs" />
     <Compile Include="Watcher\BaseWatcher.cs" />
     <Compile Include="Watcher\DatabaseWatcher.cs" />
     <Compile Include="Watcher\MasterLogger.cs" />
-    <Compile Include="Watcher\Watcher.cs" />
+    <Compile Include="Watcher\WatcherCore.cs" />
     <Compile Include="Watching.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

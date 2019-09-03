@@ -11,13 +11,15 @@ namespace LogMonitor.Watcher
         protected Thread _thread;
         private AutoResetEvent _autoResetEvent;
         protected StringBuilder _sb;
+        protected int _watchId;
         protected const string _consolidatedLogFilePath = @"C:\Windows\Temp\consolidated log\consolidatedLog.log";
 
-        public BaseWatcher()
+        public BaseWatcher(int watchId)
         {
             _thread = new Thread(new ThreadStart(this.RunThread));
             _autoResetEvent = new AutoResetEvent(false);
             _sb = new StringBuilder();
+            _watchId = watchId;
 
         }
 

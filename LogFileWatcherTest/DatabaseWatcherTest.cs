@@ -15,13 +15,14 @@ namespace LogFileWatcherTest
     [TestClass]
     public class DatabaseWatcherTest
     {
+        private int _watchId = 1;
         private string _dataSource = @"DESKTOP-64JOJJP\SQLEXPRESS";
         private string _databaseName = "Portal";
         private string _userId = "dean";
 
         public DatabaseWatcher ArrangeDatabaseWatcher()
         {
-            DatabaseWatcher dataWatcher = new DatabaseWatcher(_dataSource, _databaseName, _userId);
+            DatabaseWatcher dataWatcher = new DatabaseWatcher(_watchId, _dataSource, _databaseName, _userId);
             dataWatcher.Start();
 
             return dataWatcher;

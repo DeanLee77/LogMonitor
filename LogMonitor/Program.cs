@@ -13,7 +13,10 @@ namespace LogMonitor
     {
         static void Main(string[] args)
         {
-            Watcher.Watcher.Monitoring();
+            string configFilePath = @"C:\Windows\Temp\config\watcher.config";
+
+            WatcherCore watcher = new WatcherCore(configFilePath);
+            watcher.Monitoring();
         }
     }
 }

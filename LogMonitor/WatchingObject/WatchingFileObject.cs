@@ -11,9 +11,10 @@ namespace LogMonitor.WatchingObject
         protected string _fileType;
         protected string _fileName;
         protected string _path;
+        protected int _watchId;
 
-        public WatchingFileObject(string watchType, string fileType, string fileName, string path) 
-            : base(watchType)
+        public WatchingFileObject(string watchType, int watchId, string fileType, string fileName, string path) 
+            : base(watchType, watchId)
         {
             _fileType = fileType;
             _fileName = fileName;

@@ -12,7 +12,7 @@ namespace LogMonitor.WatchingObject
         private string _databaseName;
         private string _userId;
 
-        public WatchingDatabaseObject(string watchType, string dataSource, string databaseName, string userId) : base(watchType)
+        public WatchingDatabaseObject(string watchType, int watchId, string dataSource, string databaseName, string userId) : base(watchType, watchId)
         {
             _databaseName = databaseName;
             _dataSource = dataSource;

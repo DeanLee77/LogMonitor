@@ -8,16 +8,22 @@ namespace LogMonitor.WatchingObject
 {
     public class BaseWatchingObject
     {
-        private string _watchType;
-        public BaseWatchingObject(string watchType)
+        protected string _watchType;
+        protected int _watchId;
+        public BaseWatchingObject(string watchType, int watchId)
         {
             _watchType = watchType;
+            _watchId = watchId;
         }
 
 
         public string GetWatchType()
         {
             return _watchType;
+        }
+        public int GetWatchId()
+        {
+            return _watchId;
         }
 
     }

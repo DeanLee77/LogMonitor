@@ -11,6 +11,7 @@ namespace LogFileWatcherTest
     [TestClass]
     public class FileWatcherTest
     {
+        private int _watchId = 1;
         private string _path = @"C:\Windows\Temp\logs";
         private string _filter = @"*.log";
         private string _fileName = @"app.log";
@@ -18,7 +19,7 @@ namespace LogFileWatcherTest
 
         public FileWatcher ArrangeFileWatcher()
         {
-            FileWatcher fw = new FileWatcher(_path, _filter, _fileName, new FileInfo(_path + "\\" + _fileName).Length);
+            FileWatcher fw = new FileWatcher(_watchId, _path, _filter, _fileName, new FileInfo(_path + "\\" + _fileName).Length);
             fw.Start();
 
             return fw;
@@ -44,8 +45,7 @@ namespace LogFileWatcherTest
         [TestMethod]
         public void FileWatcherTestMethod()
         {
-            FileWatcher watcher = new FileWatcher(_path, _filter, _fileName, new FileInfo(_path + "\\" + _fileName).Length);
-            watcher.Start();
+            FileWatcher watcher = ArrangeFileWatcher(); 
             Thread.Sleep(4000);
             WriteNewLineToFile();
             Thread.Sleep(4000);
@@ -66,5 +66,7 @@ namespace LogFileWatcherTest
             Assert.AreEqual(lastLine, expectedJsonString);
 
         }
+
+
     }
 }

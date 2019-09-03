@@ -22,8 +22,8 @@ namespace LogMonitor.Watcher
         private string _jsonString;
         private string _configFilePath = @"C:\Windows\Temp\config\watcher.config";
 
-        public FileWatcher(string filePath, string filter, string fileName, long fileSize)
-            :base()
+        public FileWatcher(int watchId, string filePath, string filter, string fileName, long fileSize)
+            :base(watchId)
         {
             _fileName = fileName;
             _filePath = filePath;
@@ -52,24 +52,40 @@ namespace LogMonitor.Watcher
         private void OnChanged(object source, FileSystemEventArgs e)
         {
             _fullPath = e.FullPath;
-           
+            _newFileSize = new FileInfo(_fullPath).Length;
+
             ReadFile();
             if (!_fullPath.Equals(_configFilePath))
             {
-                if (_jsonString.Trim().Length != 0) // this variable: '_beingChanged' and logic need due to the reason specified in 'https://devblogs.microsoft.com/oldnewthing/?p=1053'
+                if (_jsonString.Trim().Length != 0 && _fileSize != _newFileSize) // this variable: this logic need due to the reason specified in 'https://devblogs.microsoft.com/oldnewthing/?p=1053'
                 {
                     //Writing into file
                     WriteOnFile();
-                    Console.WriteLine($"File: {e.FullPath}, Change type: {e.ChangeType}, offset:{_fileSize}, sizeNow:{_fileSize}, new string:{_jsonString}  ");
+                    _fileSize = _newFileSize;
+                    //Console.WriteLine($"File: {e.FullPath}, Change type: {e.ChangeType}");
                 }
+            }
+            else if(_fullPath.Equals(_configFilePath))
+            {
+                OnConfigFileUpdated(e);
+            }
+        }
+        private void ReadFile()
+        {
+            if(_filter.Equals("*.xml") || _filter.Equals("*.config"))
+            {
+                ReadXmlFile();
+            }
+            else
+            {
+                ReadNonXmlFile();
             }
         }
 
-        private void ReadFile()
+        private void ReadNonXmlFile()
         {
             using (FileStream fs = new FileStream(_fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                _newFileSize = fs.Length;
                 int count = (int)(_newFileSize - _fileSize);
                 int offset = (int)_fileSize;
                 byte[] byteArray = new byte[count];
@@ -92,9 +108,27 @@ namespace LogMonitor.Watcher
             _jsonString = _sb.ToString();
             _sb.Clear();
             
-            _fileSize = _newFileSize;           
         }
 
+        private void ReadXmlFile()
+        {
+            XmlDocument xmlDocu = new XmlDocument();
+            xmlDocu.Load(_fullPath);
+            String targetNode = _fileName.Split('.')[0];
+            XmlNodeList nodeList = xmlDocu.DocumentElement.GetElementsByTagName(targetNode);
+            if (_fileName.Equals("watcher.config"))
+            {
+                _jsonString = nodeList.Item(nodeList.Count - 1).OuterXml;
+            }
+            else
+            {
+                StringWriter sw = new StringWriter();
+                XmlTextWriter txw = new XmlTextWriter(sw);
+                nodeList.Item(nodeList.Count - 1).WriteContentTo(txw);
+                //nodeList.Item(nodeList.Count - 1).WriteTo(txw);
+                _jsonString = "<" + targetNode + ">" + sw.ToString() + "</" + targetNode + ">";
+            }               
+        }
         public string GetJsonString()
         {
             return _jsonString;
@@ -127,8 +161,7 @@ namespace LogMonitor.Watcher
                     jsonResult = JsonConvert.SerializeObject(m_logger);
 
                     break;
-                case "xml":
-                    FixXmlString(); //XML string losing a tag: <action> during the process of FileStream.Seek() so that it needs fixing string
+                case "xml":                    
                     //reading xml file : hierachy is <actions>-<action>-<id>,<name>,<description>,<level>,<timestamp>
                     XmlDocument xmlDoc = new XmlDocument();
                     xmlDoc.LoadXml(_jsonString);
@@ -148,7 +181,6 @@ namespace LogMonitor.Watcher
                     break;
             }
 
-
             Object locker = new Object();
             lock(locker)
             {
@@ -158,15 +190,23 @@ namespace LogMonitor.Watcher
                     sw.Write("\n");
                     sw.Flush();
                     sw.Close();
-                    Console.WriteLine("Finished having read changes in file system and written it onto a consolidated log file");
+                    Console.WriteLine(jsonResult);
                 }
             }
         }
-      
-        private void FixXmlString()
+
+        protected virtual void OnConfigFileUpdated(EventArgs e)
         {
-            _jsonString = "<action>\n" + _jsonString;
-            _jsonString = _jsonString.Replace("</actions>", "");
+            //when this method is being reached ReadFile() is alrady been called so that '_jsonString' has already an approprivate value
+
+            if (_jsonString.Trim().Length != 0) // this variable: this logic need due to the reason specified in 'https://devblogs.microsoft.com/oldnewthing/?p=1053'
+            {
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(_jsonString);
+                ConfigFileUpdated?.Invoke(xmlDoc, e);
+            }           
         }
+
+        public event EventHandler ConfigFileUpdated;
     }
 }

@@ -20,8 +20,8 @@ namespace LogMonitor.Watcher
         private SqlDependency _sqlDependency;
 
 
-        public DatabaseWatcher(string dataSource, string databaseName, string userId)
-            : base()
+        public DatabaseWatcher(int watchId, string dataSource, string databaseName, string userId)
+            : base(watchId)
         {
             _databaseName = databaseName;
             _dataSource = dataSource;
@@ -53,7 +53,7 @@ namespace LogMonitor.Watcher
             SqlDependency sqlDependency = sender as SqlDependency;
             sqlDependency.OnChange -= new OnChangeEventHandler(OnDataChange);
 
-            Console.WriteLine($"Database change deteced----Chagne Type: {e.Type}, Info: {e.Info} ");
+            //Console.WriteLine($"Database change deteced----Chagne Type: {e.Type}, Info: {e.Info} ");
             _sqlCommand.Notification = null;
             sqlDependency = new SqlDependency(_sqlCommand);
             sqlDependency.OnChange += new OnChangeEventHandler(OnDataChange);
@@ -117,17 +117,17 @@ namespace LogMonitor.Watcher
 
         private void WriteOnFile(MasterLogger m_logger)
         {
-
+            string jsonResult = JsonConvert.SerializeObject(m_logger);
             Object locker = new Object();
             lock (locker)
             {
                 using (StreamWriter sw = File.AppendText(_consolidatedLogFilePath))
                 {
-                    sw.Write(JsonConvert.SerializeObject(m_logger));
+                    sw.Write(jsonResult);
                     sw.Write("\n");
                     sw.Flush();
                     sw.Close();
-                    Console.WriteLine("Finished having read database and written it onto a consolidated log file");
+                    Console.WriteLine(jsonResult);
                 }
             }
         }
